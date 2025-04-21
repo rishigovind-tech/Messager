@@ -2,6 +2,7 @@ const User = require("../models/userModel");
 const Message = require("../models/messageModel");
 const cloudinary = require("../config/cloudinary");
 const mongoose = require('mongoose');
+const { getReceiverSocketId, io } = require("../config/socket");
 
 module.exports.getUserSidebar = async (req, res) => {
   try {
@@ -59,6 +60,11 @@ module.exports.sendMessage = async (req, res) => {
     });
 
     await newMessage.save()
+
+    const receiverSocketId=getReceiverSocketId(receiverId)
+    if(receiverSocketId){
+      io.to(receiverSocketId).emit("newMessage",newMessage)
+    }
 
     res.status(201).json(newMessage)
   } catch (error) {

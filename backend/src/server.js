@@ -5,9 +5,10 @@ const messageRoute = require("./routes/messageRoute");
 const connectDB = require("./config/db");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+const {app,server}=require("./config/socket")
 
 dotenv.config();
-const app = express();
+
 
 app.use(express.json({ limit: '10mb' }));
 app.use(cookieParser());
@@ -24,6 +25,6 @@ app.use("/api/messages", messageRoute);
 
 const PORT = process.env.PORT;
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log("Server is running on PORT:" + PORT);
 });
