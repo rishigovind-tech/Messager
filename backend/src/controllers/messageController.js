@@ -41,7 +41,7 @@ module.exports.getMessage = async (req, res) => {
 module.exports.sendMessage = async (req, res) => {
   try {
     const { text, image } = req.body;
-    const { id: receiverId } = res.params;
+    const { id: receiverId } = req.params;
     const senderId = req.user._id;
 
     let imageUrl;
