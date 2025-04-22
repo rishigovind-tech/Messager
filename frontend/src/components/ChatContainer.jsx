@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 
 import { useChatStore } from "../store/useChatStore";
 import ChatHeader from "./ChatHeader";
@@ -8,20 +8,36 @@ import { useAuthStore } from "../store/userAuthStore";
 import { formatMessageTime } from "../config/utilis";
 
 const ChatContainer = () => {
-  const { messages, getMessages, isMessagesLoading, selectedUser,subscribeToMessages,unsubscribeFromMessages } =
-    useChatStore();
+  const {
+    messages,
+    getMessages,
+    isMessagesLoading,
+    selectedUser,
+    subscribeToMessages,
+    unsubscribeFromMessages,
+  } = useChatStore();
 
   const { authUser } = useAuthStore();
+  const messageEndRef = useRef(null);
 
   useEffect(() => {
-    
-      getMessages(selectedUser._id);
+    getMessages(selectedUser._id);
 
-      subscribeToMessages();
+    subscribeToMessages();
 
-      return()=>unsubscribeFromMessages()
-    
-  }, [selectedUser._id, getMessages,subscribeToMessages,unsubscribeFromMessages]);
+    return () => unsubscribeFromMessages();
+  }, [
+    selectedUser._id,
+    getMessages,
+    subscribeToMessages,
+    unsubscribeFromMessages,
+  ]);
+
+  useEffect(() => {
+    if (messageEndRef.current && messages) {
+      messageEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
 
   if (isMessagesLoading) {
     return (
@@ -44,6 +60,7 @@ const ChatContainer = () => {
             className={`chat ${
               message.senderId === authUser._id ? "chat-end" : "chat-start"
             }`}
+            ref={messageEndRef}
           >
             <div className="chat-image avatar">
               <div className="size-10 rounded-full border">
@@ -64,10 +81,13 @@ const ChatContainer = () => {
             </div>
             <div className="chat-bubble flex flex-col">
               {message.image && (
-                <img src={message.image} alt="Attachment" className="sm:max-w-[200px] rounded-md mb-2" />
+                <img
+                  src={message.image}
+                  alt="Attachment"
+                  className="sm:max-w-[200px] rounded-md mb-2"
+                />
               )}
-              {message.text &&  <p> {message.text}</p>}
-
+              {message.text && <p> {message.text}</p>}
             </div>
           </div>
         ))}

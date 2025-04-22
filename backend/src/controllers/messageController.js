@@ -61,6 +61,8 @@ module.exports.sendMessage = async (req, res) => {
 
     await newMessage.save()
 
+    //realtime socket.io
+
     const receiverSocketId=getReceiverSocketId(receiverId)
     if(receiverSocketId){
       io.to(receiverSocketId).emit("newMessage",newMessage)

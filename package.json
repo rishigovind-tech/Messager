@@ -1,0 +1,21 @@
+{
+  "name": "messager",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+   "build":"npm install --prefix backend && npm install --prefix frontend && npm run build --prefix frontend",
+   "start":"npm run start --prefix backend"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rishigovind-tech/Messager.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rishigovind-tech/Messager/issues"
+  },
+  "homepage": "https://github.com/rishigovind-tech/Messager#readme",
+  "description": ""
+}
