@@ -1,16 +1,20 @@
-const express = require("express");
-const dotenv = require("dotenv");
-const authRoute = require("./routes/authRoute");
-const messageRoute = require("./routes/messageRoute");
-const connectDB = require("./config/db");
-const cookieParser = require("cookie-parser");
-const cors = require("cors");
-const {app,server}=require("./config/socket")
+import express from "express";
+import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
+import cors from "cors";
+import path from "path";
+import { fileURLToPath } from "url";
 
-const path=require("path")
+import authRoute from "./routes/authRoute.js";
+import messageRoute from "./routes/messageRoute.js";
+import connectDB from "./config/db.js";
+import { app, server } from "./config/socket.js";
+
+// Set up __dirname equivalent in ES Modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 dotenv.config();
-
 
 app.use(express.json({ limit: '10mb' }));
 app.use(cookieParser());
@@ -26,10 +30,9 @@ app.use("/api/auth", authRoute);
 app.use("/api/messages", messageRoute);
 
 const PORT = process.env.PORT;
-const __dirname=path.resolve();
 
-if(process.env.NOBE_ENV==="production"){
-  app.use(express.static(path.join(__dirname,"../frontend/dist")))
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "../frontend/dist")));
 
   app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));
