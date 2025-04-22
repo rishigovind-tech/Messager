@@ -11,8 +11,7 @@ import connectDB from "./config/db.js";
 import { app, server } from "./config/socket.js";
 
 // Set up __dirname equivalent in ES Modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
 dotenv.config();
 
