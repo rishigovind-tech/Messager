@@ -10,34 +10,40 @@ import messageRoute from "./routes/messageRoute.js";
 import connectDB from "./config/db.js";
 import { app, server } from "./config/socket.js";
 
-// Set up __dirname equivalent in ES Modules
-const __dirname = path.dirname(new URL(import.meta.url).pathname);
+// Proper __dirname setup
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 dotenv.config();
 
+// Middlewares
 app.use(express.json());
 app.use(cookieParser());
-app.use(
-  cors({
-    origin: "http://localhost:5173",
-    credentials: true,
-  })
-);
+app.use(cors({
+  origin: "http://localhost:5173",
+  credentials: true
+}));
 
+// Database connection
 connectDB();
+
+// Routes
 app.use("/api/auth", authRoute);
 app.use("/api/messages", messageRoute);
 
-const PORT = process.env.PORT;
-
+// Production configuration
 if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "../frontend/dist")));
-
+  const staticPath = path.resolve(__dirname, "../../frontend/dist");
+  
+  app.use(express.static(staticPath));
+  
+  // Handle client-side routing
   app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));
+    res.sendFile(path.join(staticPath, "index.html"));
   });
 }
 
+const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
-  console.log("Server is running on PORT:" + PORT);
+  console.log(`Server running on port ${PORT}`);
 });
